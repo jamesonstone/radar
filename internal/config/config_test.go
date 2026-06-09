@@ -41,7 +41,11 @@ func TestConfigAndDBPathsDefaultToCWD(t *testing.T) {
 	if err != nil {
 		t.Fatalf("getwd: %v", err)
 	}
-	t.Cleanup(func() { _ = os.Chdir(oldwd) })
+	t.Cleanup(func() {
+		if err := os.Chdir(oldwd); err != nil {
+			t.Logf("restore cwd: %v", err)
+		}
+	})
 	if err := os.Chdir(dir); err != nil {
 		t.Fatalf("chdir: %v", err)
 	}
