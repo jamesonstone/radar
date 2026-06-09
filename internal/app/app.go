@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 	"sort"
 	"time"
 
@@ -16,6 +17,8 @@ import (
 	"github.com/jamesonstone/radar/internal/store"
 	"github.com/jamesonstone/radar/internal/tui"
 )
+
+var Version = "dev"
 
 type Service struct {
 	cfg      config.Config
@@ -100,8 +103,9 @@ func (s *Service) Poll() (domain.PollResult, error) {
 
 func Execute() {
 	root := &cobra.Command{
-		Use:   "rdr",
-		Short: "Watch coding-agent processes on macOS",
+		Use:     "rdr",
+		Short:   "🛰️ radar is a local process radar for coding agents",
+		Version: currentVersion(),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			svc, cfg, cleanup, err := initService()
 			if err != nil {
@@ -114,8 +118,9 @@ func Execute() {
 			return err
 		},
 	}
+	root.SetVersionTemplate("rdr version {{.Version}}\n")
 
-	root.AddCommand(onceCommand(), listCommand(), historyCommand(), configCommand())
+	root.AddCommand(onceCommand(), listCommand(), historyCommand(), configCommand(), versionCommand())
 	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -263,4 +268,31 @@ func formatBytes(b uint64) string {
 		exp++
 	}
 	return fmt.Sprintf("%.0f%ciB", float64(b)/float64(div), "KMGTPE"[exp])
+}
+
+func versionCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:   "version",
+		Short: "Print the installed radar version",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			_, err := fmt.Fprintln(cmd.OutOrStdout(), currentVersion())
+			return err
+		},
+	}
+}
+
+func currentVersion() string {
+	if Version != "" && Version != "dev" {
+		return Version
+	}
+	if buildInfo, ok := debug.ReadBuildInfo(); ok {
+		if buildInfo.Main.Version != "" && buildInfo.Main.Version != "(devel)" {
+			return buildInfo.Main.Version
+		}
+	}
+	if Version != "" {
+		return Version
+	}
+	return "dev"
 }
