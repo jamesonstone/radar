@@ -118,9 +118,18 @@ func (s *SQLiteStore) ActiveSessions() (map[string]domain.Session, error) {
 		if err := rows.Scan(&sess.ID, &sess.PID, &sess.Label, &sess.Name, &sess.Exe, &sess.Cmdline, &sess.CWD, &started, &firstSeen, &lastSeen); err != nil {
 			return nil, err
 		}
-		sess.StartedAt, _ = time.Parse(time.RFC3339Nano, started)
-		sess.FirstSeenAt, _ = time.Parse(time.RFC3339Nano, firstSeen)
-		sess.LastSeenAt, _ = time.Parse(time.RFC3339Nano, lastSeen)
+		sess.StartedAt, err = time.Parse(time.RFC3339Nano, started)
+		if err != nil {
+			return nil, err
+		}
+		sess.FirstSeenAt, err = time.Parse(time.RFC3339Nano, firstSeen)
+		if err != nil {
+			return nil, err
+		}
+		sess.LastSeenAt, err = time.Parse(time.RFC3339Nano, lastSeen)
+		if err != nil {
+			return nil, err
+		}
 		sess.Runtime = sess.LastSeenAt.Sub(sess.StartedAt)
 		out[sess.ID] = sess
 	}
@@ -195,11 +204,23 @@ func (s *SQLiteStore) ListSessions(limit int, agent string) ([]domain.Session, e
 		if err := rows.Scan(&sess.ID, &sess.PID, &sess.Label, &sess.Name, &sess.Exe, &sess.Cmdline, &sess.CWD, &started, &firstSeen, &lastSeen, &ended); err != nil {
 			return nil, err
 		}
-		sess.StartedAt, _ = time.Parse(time.RFC3339Nano, started)
-		sess.FirstSeenAt, _ = time.Parse(time.RFC3339Nano, firstSeen)
-		sess.LastSeenAt, _ = time.Parse(time.RFC3339Nano, lastSeen)
+		sess.StartedAt, err = time.Parse(time.RFC3339Nano, started)
+		if err != nil {
+			return nil, err
+		}
+		sess.FirstSeenAt, err = time.Parse(time.RFC3339Nano, firstSeen)
+		if err != nil {
+			return nil, err
+		}
+		sess.LastSeenAt, err = time.Parse(time.RFC3339Nano, lastSeen)
+		if err != nil {
+			return nil, err
+		}
 		if ended.Valid {
-			t, _ := time.Parse(time.RFC3339Nano, ended.String)
+			t, err := time.Parse(time.RFC3339Nano, ended.String)
+			if err != nil {
+				return nil, err
+			}
 			sess.EndedAt = &t
 			sess.Runtime = t.Sub(sess.StartedAt)
 		} else {
@@ -226,7 +247,10 @@ func (s *SQLiteStore) ListEvents(limit int) ([]domain.Event, error) {
 		if err := rows.Scan(&e.Type, &e.Message, &at); err != nil {
 			return nil, err
 		}
-		e.At, _ = time.Parse(time.RFC3339Nano, at)
+		e.At, err = time.Parse(time.RFC3339Nano, at)
+		if err != nil {
+			return nil, err
+		}
 		events = append(events, e)
 	}
 	return events, rows.Err()
