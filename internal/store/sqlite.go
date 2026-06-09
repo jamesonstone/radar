@@ -3,7 +3,6 @@ package store
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/jamesonstone/radar/internal/domain"
@@ -254,13 +253,4 @@ func (s *SQLiteStore) ListEvents(limit int) ([]domain.Event, error) {
 		events = append(events, e)
 	}
 	return events, rows.Err()
-}
-
-func (s *SQLiteStore) DebugCounts() (int, error) {
-	row := s.db.QueryRow(`select count(*) from sessions`)
-	var c int
-	if err := row.Scan(&c); err != nil {
-		return 0, fmt.Errorf("count sessions: %w", err)
-	}
-	return c, nil
 }
