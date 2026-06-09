@@ -34,3 +34,52 @@ func TestWriteDefaultAndLoad(t *testing.T) {
 		t.Fatalf("expected default targets, got %d", len(cfg.Targets))
 	}
 }
+
+func TestConfigAndDBPathsDefaultToCWD(t *testing.T) {
+	dir := t.TempDir()
+	oldwd, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("getwd: %v", err)
+	}
+	t.Cleanup(func() { _ = os.Chdir(oldwd) })
+	if err := os.Chdir(dir); err != nil {
+		t.Fatalf("chdir: %v", err)
+	}
+
+	configPath, err := ConfigPath()
+	if err != nil {
+		t.Fatalf("config path: %v", err)
+	}
+	if got, want := configPath, filepath.Join(dir, ".radar", "config.yaml"); got != want {
+		t.Fatalf("config path = %q, want %q", got, want)
+	}
+
+	dbPath, err := DBPath()
+	if err != nil {
+		t.Fatalf("db path: %v", err)
+	}
+	if got, want := dbPath, filepath.Join(dir, ".radar", "radar.sqlite3"); got != want {
+		t.Fatalf("db path = %q, want %q", got, want)
+	}
+}
+
+func TestConfigAndDBPathsSupportEnvOverride(t *testing.T) {
+	t.Setenv("RADAR_CONFIG_PATH", "/tmp/custom-config.yaml")
+	t.Setenv("RADAR_DB_PATH", "/tmp/custom-radar.sqlite3")
+
+	configPath, err := ConfigPath()
+	if err != nil {
+		t.Fatalf("config path: %v", err)
+	}
+	if got, want := configPath, "/tmp/custom-config.yaml"; got != want {
+		t.Fatalf("config path = %q, want %q", got, want)
+	}
+
+	dbPath, err := DBPath()
+	if err != nil {
+		t.Fatalf("db path: %v", err)
+	}
+	if got, want := dbPath, "/tmp/custom-radar.sqlite3"; got != want {
+		t.Fatalf("db path = %q, want %q", got, want)
+	}
+}

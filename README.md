@@ -17,8 +17,11 @@ A lightweight local process observer for coding agents.
 
 ## Paths
 
-- Config: `~/.config/radar/config.yaml`
-- DB: `~/.local/share/radar/radar.sqlite3`
+- Default config: `./.radar/config.yaml` (relative to current working directory)
+- Default DB: `./.radar/radar.sqlite3` (relative to current working directory)
+- Overrides:
+  - `RADAR_CONFIG_PATH=/absolute/or/relative/path/config.yaml`
+  - `RADAR_DB_PATH=/absolute/or/relative/path/radar.sqlite3`
 
 ## Build & run
 

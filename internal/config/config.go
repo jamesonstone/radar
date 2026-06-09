@@ -88,19 +88,25 @@ func Default() Config {
 }
 
 func ConfigPath() (string, error) {
-	home, err := os.UserHomeDir()
+	if v := os.Getenv("RADAR_CONFIG_PATH"); v != "" {
+		return v, nil
+	}
+	cwd, err := os.Getwd()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(home, ".config", "radar", "config.yaml"), nil
+	return filepath.Join(cwd, ".radar", "config.yaml"), nil
 }
 
 func DBPath() (string, error) {
-	home, err := os.UserHomeDir()
+	if v := os.Getenv("RADAR_DB_PATH"); v != "" {
+		return v, nil
+	}
+	cwd, err := os.Getwd()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(home, ".local", "share", "radar", "radar.sqlite3"), nil
+	return filepath.Join(cwd, ".radar", "radar.sqlite3"), nil
 }
 
 func EnsureParentDir(path string) error {
