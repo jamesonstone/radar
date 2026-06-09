@@ -1,0 +1,26 @@
+poll_interval: 2s
+ui:
+  show_events: true
+  show_exited_recent: true
+  exited_recent_window: 15m
+notifications:
+  enabled: true
+  on_start: true
+  on_stop: true
+  on_long_running: true
+  long_running_threshold: 2h
+targets:
+  - label: Codex
+    match:
+      names: ["Codex"]
+      command_contains: ["Codex.app"]
+  - label: GitHub Copilot
+    match:
+      names: ["GitHub Copilot", "Copilot"]
+  - label: Warp
+    match:
+      names: ["Warp"]
+  - label: Claude Code
+    match:
+      names: ["claude"]
+      command_contains: ["claude"]
