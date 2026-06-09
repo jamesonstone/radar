@@ -9,7 +9,7 @@ import (
 )
 
 func TestUpsertAndMarkExited(t *testing.T) {
-	dbPath := filepath.Join(t.TempDir(), "agent-watch.sqlite3")
+	dbPath := filepath.Join(t.TempDir(), "radar.sqlite3")
 	st, err := Open(dbPath)
 	if err != nil {
 		t.Fatalf("open store: %v", err)

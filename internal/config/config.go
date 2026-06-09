@@ -92,7 +92,7 @@ func ConfigPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(home, ".config", "agent-watch", "config.yaml"), nil
+	return filepath.Join(home, ".config", "radar", "config.yaml"), nil
 }
 
 func DBPath() (string, error) {
@@ -100,7 +100,7 @@ func DBPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(home, ".local", "share", "agent-watch", "agent-watch.sqlite3"), nil
+	return filepath.Join(home, ".local", "share", "radar", "radar.sqlite3"), nil
 }
 
 func EnsureParentDir(path string) error {

@@ -4,25 +4,25 @@ A lightweight local process observer for coding agents.
 
 ## Binary
 
-`agent-watch`
+`rdr`
 
 ## Commands
 
-- `agent-watch` – live TUI dashboard
-- `agent-watch once` – print one snapshot and exit
-- `agent-watch list` – list currently matched processes
-- `agent-watch history --limit 20 --agent Codex` – show saved sessions
-- `agent-watch config init` – write default config
-- `agent-watch config path` – print config path
+- `rdr` – live TUI dashboard
+- `rdr once` – print one snapshot and exit
+- `rdr list` – list currently matched processes
+- `rdr history --limit 20 --agent Codex` – show saved sessions
+- `rdr config init` – write default config
+- `rdr config path` – print config path
 
 ## Paths
 
-- Config: `~/.config/agent-watch/config.yaml`
-- DB: `~/.local/share/agent-watch/agent-watch.sqlite3`
+- Config: `~/.config/radar/config.yaml`
+- DB: `~/.local/share/radar/radar.sqlite3`
 
 ## Build & run
 
 ```bash
-go build ./cmd/agent-watch
-./agent-watch once
+go build ./cmd/rdr
+./rdr once
 ```

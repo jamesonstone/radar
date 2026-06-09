@@ -80,7 +80,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	headerStyle := lipgloss.NewStyle().Bold(true)
 	var b strings.Builder
-	b.WriteString(headerStyle.Render(fmt.Sprintf("Agent Watch\tUpdated %s", time.Now().Format("15:04:05"))))
+	b.WriteString(headerStyle.Render(fmt.Sprintf("radar\tUpdated %s", time.Now().Format("15:04:05"))))
 	b.WriteString("\n")
 	b.WriteString("STATUS   AGENT             PID     RUNTIME    CPU    MEM     PROCESS\n")
 	for _, s := range m.lastPoll.Running {

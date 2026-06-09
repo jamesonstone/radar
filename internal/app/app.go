@@ -61,7 +61,7 @@ func (s *Service) Poll() (domain.PollResult, error) {
 			msg := fmt.Sprintf("started %s pid=%d", sess.Label, sess.PID)
 			_ = s.store.InsertEvent(sess.ID, "started", msg, now)
 			if s.cfg.Notifications.Enabled && s.cfg.Notifications.OnStart {
-				_ = s.notifier.Notify("Agent Watch", fmt.Sprintf("%s started", sess.Label))
+				_ = s.notifier.Notify("radar", fmt.Sprintf("%s started", sess.Label))
 			}
 		}
 		runtime := now.Sub(sess.StartedAt)
@@ -69,7 +69,7 @@ func (s *Service) Poll() (domain.PollResult, error) {
 			s.longSent[sess.ID] = true
 			msg := fmt.Sprintf("%s has been running for %s", sess.Label, runtime.Round(time.Second))
 			_ = s.store.InsertEvent(sess.ID, "long_running", msg, now)
-			_ = s.notifier.Notify("Agent Watch", msg)
+			_ = s.notifier.Notify("radar", msg)
 		}
 	}
 	exited, err := s.store.MarkExited(active, now)
@@ -81,7 +81,7 @@ func (s *Service) Poll() (domain.PollResult, error) {
 		msg := fmt.Sprintf("stopped %s pid=%d runtime=%s", sess.Label, sess.PID, sess.Runtime.Round(time.Second))
 		_ = s.store.InsertEvent(sess.ID, "stopped", msg, now)
 		if s.cfg.Notifications.Enabled && s.cfg.Notifications.OnStop {
-			_ = s.notifier.Notify("Agent Watch", fmt.Sprintf("%s stopped after %s", sess.Label, sess.Runtime.Round(time.Second)))
+			_ = s.notifier.Notify("radar", fmt.Sprintf("%s stopped after %s", sess.Label, sess.Runtime.Round(time.Second)))
 		}
 	}
 	runningMap, err := s.store.ActiveSessions()
@@ -100,7 +100,7 @@ func (s *Service) Poll() (domain.PollResult, error) {
 
 func Execute() {
 	root := &cobra.Command{
-		Use:   "agent-watch",
+		Use:   "rdr",
 		Short: "Watch coding-agent processes on macOS",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			svc, cfg, cleanup, err := initService()
